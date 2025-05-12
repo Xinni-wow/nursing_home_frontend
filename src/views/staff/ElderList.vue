@@ -11,7 +11,7 @@
         </div>
 
         <!-- 老人信息列表 -->
-        <el-table :data="elderList" border stripe style="width: 100%;">
+        <el-table :data="paginatedElderList" border stripe style="width: 100%;">
             <el-table-column label="照片" width="100">
                 <template #default="{ row }">
                     <el-image style="width: 60px; height: 60px; border-radius: 6px" :src="row.photo || defaultImage"
@@ -40,10 +40,14 @@
             </el-table-column>
         </el-table>
 
+        <!-- 分页控件 -->
+        <el-pagination style="margin-top: 20px; text-align: center" background layout="prev, pager, next"
+            :page-size="pageSize" :total="elderList.length" @current-change="handlePageChange"
+            :current-page="currentPage" />
+
         <!-- 编辑弹窗 -->
         <el-dialog v-model="editDialogVisible" title="编辑老人信息" width="600px">
             <el-form ref="formRef" label-width="100px" enctype="multipart/form-data">
-
                 <el-form-item label="照片">
                     <div class="photo-area">
                         <el-image style="width: 120px; height: 120px; border-radius: 8px;"
@@ -103,7 +107,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import axios from '@/utils/request'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -115,6 +119,7 @@ const getElderList = () => {
     axios.get('/staff/elders')
         .then(res => {
             elderList.value = res.data
+            currentPage.value = 1 // 搜索后重置页码
         })
 }
 
@@ -126,6 +131,7 @@ const handleSearch = () => {
     axios.get(`/staff/elders/search/?name=${searchName.value}`)
         .then(res => {
             elderList.value = res.data
+            currentPage.value = 1
         })
 }
 
@@ -148,10 +154,8 @@ const handleFileChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
-    // 设置文件到表单中
     editForm.value.photo = file
 
-    // 构造 FormData
     const formData = new FormData()
     for (const key in editForm.value) {
         if (editForm.value[key]) {
@@ -163,12 +167,10 @@ const handleFileChange = async (e) => {
         await axios.patch(`/staff/elders/${editForm.value.id}/update/`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         })
-
         ElMessage.success('照片更换成功')
 
-        // 不关闭弹窗，而是重新拉取当前老人详情，刷新弹窗内容
         const res = await axios.get(`/staff/elders/${editForm.value.id}/`)
-        editForm.value = { ...res.data } // 更新表单数据，包含新照片 URL
+        editForm.value = { ...res.data }
         getElderList()
 
     } catch (err) {
@@ -177,13 +179,10 @@ const handleFileChange = async (e) => {
     }
 }
 
-const previewPhoto = ref(null)
-
 const editElder = async (elder) => {
     try {
         const res = await axios.get(`/staff/elders/${elder.id}/`)
         editForm.value = { ...res.data }
-        previewPhoto.value = res.data.photo
         editDialogVisible.value = true
     } catch (err) {
         ElMessage.error('加载失败')
@@ -192,7 +191,6 @@ const editElder = async (elder) => {
 
 const submitForm = async () => {
     const formData = new FormData()
-
     for (const key in editForm.value) {
         if (key === 'photo') continue
         formData.append(key, editForm.value[key])
@@ -206,11 +204,10 @@ const submitForm = async () => {
         editDialogVisible.value = false
         getElderList()
     } catch (err) {
-        // 👇 处理并展示后端返回的详细错误
         if (err.response && err.response.data && err.response.data.data) {
             const backendErrors = err.response.data.data
             for (const field in backendErrors) {
-                ElMessage.error(` ${backendErrors[field].join(', ')}`)
+                ElMessage.error(`${backendErrors[field].join(', ')}`)
             }
         } else {
             ElMessage.error('修改失败')
@@ -218,6 +215,7 @@ const submitForm = async () => {
         console.error(err)
     }
 }
+
 const deleteElder = (elder) => {
     ElMessageBox.confirm(`确认删除老人 ${elder.full_name} 吗？`, '提示', {
         type: 'warning'
@@ -229,6 +227,20 @@ const deleteElder = (elder) => {
             })
     }).catch(() => { })
 }
+
+// 分页功能
+const currentPage = ref(1)
+const pageSize = ref(5)
+
+const handlePageChange = (page) => {
+    currentPage.value = page
+}
+
+const paginatedElderList = computed(() => {
+    const start = (currentPage.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    return elderList.value.slice(start, end)
+})
 
 getElderList()
 </script>

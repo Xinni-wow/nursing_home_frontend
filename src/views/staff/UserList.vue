@@ -23,7 +23,7 @@
         </el-form>
 
         <!-- 表格展示 -->
-        <el-table :data="users" v-loading="loading" style="margin-top: 20px" stripe border>
+        <el-table :data="paginatedUsers" v-loading="loading" style="margin-top: 20px" stripe border>
             <el-table-column prop="username" label="用户名" width="150" />
             <el-table-column prop="full_name" label="真实姓名" width="150" />
             <el-table-column prop="phone" label="手机号" width="140" />
@@ -46,35 +46,40 @@
                 </template>
             </el-table-column>
         </el-table>
-    </div>
 
-    <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px">
-        <el-form :model="editForm" label-width="100px">
-            <el-form-item label="用户名">
-                <el-input v-model="editForm.username" disabled />
-            </el-form-item>
-            <el-form-item label="真实姓名">
-                <el-input v-model="editForm.full_name" />
-            </el-form-item>
-            <el-form-item label="手机号">
-                <el-input v-model="editForm.phone" />
-            </el-form-item>
-            <el-form-item label="住址">
-                <el-input v-model="editForm.address" />
-            </el-form-item>
-            <el-form-item label="邮箱">
-                <el-input v-model="editForm.email" />
-            </el-form-item>
-        </el-form>
-        <template #footer>
-            <el-button @click="editDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="submitEdit">保存</el-button>
-        </template>
-    </el-dialog>
+        <!-- 分页控件 -->
+        <el-pagination style="margin-top: 20px; text-align: center" background layout="prev, pager, next"
+            :page-size="pageSize" :total="users.length" @current-change="handlePageChange"
+            :current-page="currentPage" />
+
+        <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px">
+            <el-form :model="editForm" label-width="100px">
+                <el-form-item label="用户名">
+                    <el-input v-model="editForm.username" disabled />
+                </el-form-item>
+                <el-form-item label="真实姓名">
+                    <el-input v-model="editForm.full_name" />
+                </el-form-item>
+                <el-form-item label="手机号">
+                    <el-input v-model="editForm.phone" />
+                </el-form-item>
+                <el-form-item label="住址">
+                    <el-input v-model="editForm.address" />
+                </el-form-item>
+                <el-form-item label="邮箱">
+                    <el-input v-model="editForm.email" />
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <el-button @click="editDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitEdit">保存</el-button>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from '@/utils/request'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -89,6 +94,7 @@ const fetchUsers = async () => {
     try {
         const res = await axios.get('/staff/relatives/')
         users.value = res.data
+        currentPage.value = 1
     } catch (err) {
         ElMessage.error('获取用户列表失败')
     } finally {
@@ -96,30 +102,12 @@ const fetchUsers = async () => {
     }
 }
 
-// const searchByUsername = async () => {
-//     if (!usernameKeyword.value.trim()) {
-//         return ElMessage.warning('请输入用户名关键词')
-//     }
-//     loading.value = true
-//     try {
-//         const res = await axios.get('/staff/relatives/search-by-username/', {
-//             params: { username: usernameKeyword.value }
-//         })
-//         users.value = res.data
-//     } catch (err) {
-//         ElMessage.error('搜索失败')
-//     } finally {
-//         loading.value = false
-//     }
-// }
-
 const searchByUsername = async () => {
     const keyword = usernameKeyword.value.trim()
     loading.value = true
 
     try {
         let url = '/staff/relatives/'
-        // 如果搜索输入为空值返回全部数据
         if (keyword) {
             url = '/staff/relatives/search-by-username/'
         }
@@ -129,35 +117,20 @@ const searchByUsername = async () => {
         })
 
         users.value = res.data
+        currentPage.value = 1
     } catch (err) {
         ElMessage.error('搜索失败')
     } finally {
         loading.value = false
     }
 }
-// const searchByName = async () => {
-//     if (!nameKeyword.value.trim()) {
-//         return ElMessage.warning('请输入真实姓名关键词')
-//     }
-//     loading.value = true
-//     try {
-//         const res = await axios.get('/staff/relatives/search-by-fullname/', {
-//             params: { name: nameKeyword.value }
-//         })
-//         users.value = res.data
-//     } catch (err) {
-//         ElMessage.error('搜索失败')
-//     } finally {
-//         loading.value = false
-//     }
-// }
+
 const searchByName = async () => {
     const keyword = nameKeyword.value.trim()
     loading.value = true
 
     try {
         let url = '/staff/relatives/'
-        // 如果搜索输入为空值返回全部数据
         if (keyword) {
             url = '/staff/relatives/search-by-fullname/'
         }
@@ -167,6 +140,7 @@ const searchByName = async () => {
         })
 
         users.value = res.data
+        currentPage.value = 1
     } catch (err) {
         ElMessage.error('搜索失败')
     } finally {
@@ -191,13 +165,14 @@ const searchByElderName = async () => {
         })
 
         users.value = res.data
+        currentPage.value = 1
     } catch (err) {
-        e
         ElMessage.error('搜索失败')
     } finally {
         loading.value = false
     }
 }
+
 const editDialogVisible = ref(false)
 const editForm = ref({})
 
@@ -228,17 +203,14 @@ const handleDelete = async (id) => {
                 type: 'warning',
             }
         )
-        const res = await axios.delete(`/staff/relative/${id}/delete/`) // 保存响应结果
-        if (res.data.code >= 400) { // 判断业务逻辑上的失败
+        const res = await axios.delete(`/staff/relative/${id}/delete/`)
+        if (res.data.code >= 400) {
             throw new Error(res.data.data.error || res.data.message)
         }
         ElMessage.success('删除成功')
         fetchUsers()
     } catch (err) {
-        if (err === 'cancel') {
-            // 用户取消删除
-            return
-        }
+        if (err === 'cancel') return
         const errorMessage = err.response?.data?.data?.error
             || err.response?.data?.message
             || err.message
@@ -247,6 +219,19 @@ const handleDelete = async (id) => {
     }
 }
 
+// 分页功能
+const currentPage = ref(1)
+const pageSize = ref(5)
+
+const handlePageChange = (page) => {
+    currentPage.value = page
+}
+
+const paginatedUsers = computed(() => {
+    const start = (currentPage.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    return users.value.slice(start, end)
+})
 
 onMounted(() => {
     fetchUsers()

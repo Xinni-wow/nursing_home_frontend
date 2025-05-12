@@ -57,7 +57,7 @@ import axios from '@/utils/request'
 import { ElMessage } from 'element-plus'
 import VChart from 'vue-echarts'
 
-// 注册 ECharts 组件（若你未设置全局注册）
+// 注册 ECharts 组件
 import { use } from 'echarts/core'
 import { LineChart, BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components'
