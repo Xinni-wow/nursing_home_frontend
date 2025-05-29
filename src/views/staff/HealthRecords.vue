@@ -173,17 +173,27 @@ const fetchRecordsByDate = async () => {
 fetchRecordsByDate()
 const updateRecord = async (record) => {
     try {
+        const formattedDate = formatDate(selectedDate.value)
+
+        const cleanValue = (val) => {
+            if (val === '' || isNaN(val)) return null
+            return parseFloat(val)
+        }
+
         await axios.put(`/health/records/${record.id}/`, {
-            temperature: record.temperature,
-            blood_pressure_systolic: record.blood_pressure_systolic,
-            blood_pressure_diastolic: record.blood_pressure_diastolic,
-            heart_rate: record.heart_rate,
-            blood_sugar: record.blood_sugar,
-            respiratory_rate: record.respiratory_rate,
-            oxygen_saturation: record.oxygen_saturation,
-            weight: record.weight,
+            elder: record.elder_info.id,
+            date: formattedDate,
+            temperature: cleanValue(record.temperature),
+            blood_pressure_systolic: cleanValue(record.blood_pressure_systolic),
+            blood_pressure_diastolic: cleanValue(record.blood_pressure_diastolic),
+            heart_rate: cleanValue(record.heart_rate),
+            blood_sugar: cleanValue(record.blood_sugar),
+            respiratory_rate: cleanValue(record.respiratory_rate),
+            oxygen_saturation: cleanValue(record.oxygen_saturation),
+            weight: cleanValue(record.weight),
             notes: record.notes
         })
+
         ElMessage.success('更新成功')
     } catch (err) {
         ElMessage.error('更新失败')
