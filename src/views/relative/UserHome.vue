@@ -15,8 +15,20 @@
                 <el-menu :default-active="activeMenu" @select="handleMenuSelect" router>
                     <el-menu-item index="/user/profile">个人信息</el-menu-item>
                     <el-menu-item index="/user/elders">我家老人</el-menu-item>
-                    <el-menu-item index="/user/health">健康情况</el-menu-item>
+                    <el-menu-item index="/user/health">健康状况</el-menu-item>
+                    <el-sub-menu index="/user/outinglist">
+                      <template #title>外出申请</template>
+                      <el-menu-item index="/user/outingform">填写申请</el-menu-item>
+                      <el-menu-item index="/user/outinglist">申请记录</el-menu-item>
+                    </el-sub-menu>
+                    <el-sub-menu index="/user/appointmentlist">
+                      <template #title>预约来访</template>
+                      <el-menu-item index="/user/appointmentform">预约申请</el-menu-item>
+                      <el-menu-item index="/user/appointmentlist">预约记录</el-menu-item>
+                    </el-sub-menu>
+                    <el-menu-item index="/user/diet/list">餐饮查看</el-menu-item>
                 </el-menu>
+
             </el-aside>
 
             <!-- 主内容区域 -->
