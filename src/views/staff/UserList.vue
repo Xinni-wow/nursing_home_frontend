@@ -4,22 +4,26 @@
 
         <!-- 搜索栏 -->
         <el-form :inline="true" @submit.prevent>
-            <el-form-item label="按用户名搜索">
-                <el-input v-model="usernameKeyword" placeholder="输入用户名" @keyup.enter="searchByUsername" clearable />
-            </el-form-item>
-            <el-button type="primary" @click="searchByUsername">搜索</el-button>
+            <el-form :inline="true" @submit.prevent>
+                <el-form-item label="按用户名搜索">
+                    <el-input v-model="usernameKeyword" placeholder="输入用户名" @keyup.enter="searchByUsername" clearable />
+                    <el-button type="primary" @click="searchByUsername">搜索</el-button>
+                </el-form-item>
 
-            <el-form-item label="按真实姓名搜索" style="margin-left: 20px">
-                <el-input v-model="nameKeyword" placeholder="输入真实姓名" @keyup.enter="searchByName" clearable />
-            </el-form-item>
-            <el-button type="primary" @click="searchByName">搜索</el-button>
+                <el-form-item label="按真实姓名搜索">
+                    <el-input v-model="nameKeyword" placeholder="输入真实姓名" @keyup.enter="searchByName" clearable />
+                    <el-button type="primary" @click="searchByName">搜索</el-button>
+                </el-form-item>
 
-            <el-form-item label="按绑定老人姓名搜索" style="margin-left: 20px">
-                <el-input v-model="elderKeyword" placeholder="输入老人姓名" @keyup.enter="searchByElderName" clearable />
-            </el-form-item>
-            <el-button type="primary" @click="searchByElderName">搜索</el-button>
+                <el-form-item label="按绑定老人姓名搜索">
+                    <el-input v-model="elderKeyword" placeholder="输入老人姓名" @keyup.enter="searchByElderName" clearable />
+                    <el-button type="primary" @click="searchByElderName">搜索</el-button>
+                </el-form-item>
 
-            <el-button @click="fetchUsers" style="margin-left: 20px">重置</el-button>
+                <el-form-item style="width: 100%;">
+                    <el-button @click="fetchUsers">重置</el-button>
+                </el-form-item>
+            </el-form>
         </el-form>
 
         <!-- 表格展示 -->
@@ -41,7 +45,7 @@
             </el-table-column>
             <el-table-column label="操作" width="160">
                 <template #default="scope">
-                    <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
@@ -241,5 +245,10 @@ onMounted(() => {
 <style scoped>
 .user-list {
     padding: 20px;
+}
+
+.el-input {
+    width: 150px;
+    margin-right: 10px;
 }
 </style>

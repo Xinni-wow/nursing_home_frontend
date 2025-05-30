@@ -15,7 +15,7 @@
             <el-table-column label="照片" width="100">
                 <template #default="{ row }">
                     <el-image style="width: 60px; height: 60px; border-radius: 6px" :src="row.photo || defaultImage"
-                        fit="cover" :preview-src-list="[row.photo || defaultImage]" />
+                        fit="cover" :preview-src-list="[row.photo || defaultImage]" preview-teleported="true" />
                 </template>
             </el-table-column>
             <el-table-column prop="id" label="ID" />
