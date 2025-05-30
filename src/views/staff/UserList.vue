@@ -45,7 +45,7 @@
             </el-table-column>
             <el-table-column label="操作" width="160">
                 <template #default="scope">
-                    <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
@@ -56,8 +56,8 @@
             :page-size="pageSize" :total="users.length" @current-change="handlePageChange"
             :current-page="currentPage" />
 
-        <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px">
-            <el-form :model="editForm" label-width="100px">
+        <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px" append-to-body="true" top='25vh'>
+            <el-form :model="editForm" label-width="100px" size="small">
                 <el-form-item label="用户名">
                     <el-input v-model="editForm.username" disabled />
                 </el-form-item>

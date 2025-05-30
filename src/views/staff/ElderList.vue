@@ -46,11 +46,11 @@
             :current-page="currentPage" />
 
         <!-- 编辑弹窗 -->
-        <el-dialog v-model="editDialogVisible" title="编辑老人信息" width="600px">
-            <el-form ref="formRef" label-width="100px" enctype="multipart/form-data">
+        <el-dialog v-model="editDialogVisible" title="编辑老人信息" width="600px" append-to-body="true" top='5vh'>
+            <el-form ref="formRef" label-width="100px" size="small">
                 <el-form-item label="照片">
                     <div class="photo-area">
-                        <el-image style="width: 120px; height: 120px; border-radius: 8px;"
+                        <el-image style="width: 80px; height: auto; border-radius: 8px;"
                             :src="editForm.photo || defaultImage" fit="cover" />
                         <el-button type="primary" @click="triggerFileSelect">更换照片</el-button>
                         <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange"
