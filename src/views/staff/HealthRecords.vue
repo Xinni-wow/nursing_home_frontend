@@ -216,7 +216,6 @@ const deleteRecord = async (recordId) => {
 
 import VChart from 'vue-echarts'
 
-// 注册 ECharts 组件
 import { use } from 'echarts/core'
 import { LineChart, BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components'
@@ -242,7 +241,7 @@ const recent7Records = computed(() => {
         .slice() // 避免修改原数组
         .sort((a, b) => new Date(b.date) - new Date(a.date)) // 按日期降序
         .slice(0, 7)
-        .reverse() // 让图表日期升序
+        .reverse() // 日期升序
 })
 
 const lineChartOption = ref({})
@@ -287,7 +286,7 @@ const updateCharts = () => {
     const weight = records.map(r => r.weight)
 
     lineChartOption.value = {
-        title: { text: '健康趋势（折线图）' },
+        title: { text: '近7日健康趋势' },
         tooltip: { trigger: 'axis' },
         legend: {
             data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)']
@@ -307,7 +306,7 @@ const updateCharts = () => {
     }
 
     barChartOption.value = {
-        title: { text: '健康指标平均值（条形图）' },
+        title: { text: '近7日健康指标平均值' },
         tooltip: {},
         xAxis: {
             type: 'category',
@@ -339,7 +338,7 @@ const updateCharts = () => {
     }
 }
 
-// 简单平均函数
+// 平均函数
 const average = arr => {
     if (arr.length === 0) return 0
     return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1)

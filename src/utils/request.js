@@ -30,6 +30,11 @@ request.interceptors.response.use(
   response => response.data,
   async error => {
     const originalRequest = error.config
+    
+    // 如果是登录接口的错误，直接返回错误
+    if (originalRequest.url === 'auth/login/') {
+        return Promise.reject(error)
+    }
 
     // 如果是 401 错误，并且不是刷新 token 的请求
     if (error.response?.status === 401 && !originalRequest._retry) {

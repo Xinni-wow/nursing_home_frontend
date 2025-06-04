@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 
 import Login from '@/views/Login.vue'
-import AdminHome from '@/views/staff/AdminHome.vue'
-import UserHome from '@/views/relative/UserHome.vue'
 import Register from '@/views/Register.vue'
 
 const routes = [
@@ -27,18 +25,6 @@ const routes = [
     path: '/forgot-password',
     component: () => import('@/views/ForgotPassword.vue')
   },
-  // {
-  //   path: '/admin',
-  //   name: 'AdminHome',
-  //   component: AdminHome,
-  //   meta: { requiresAuth: true, role:'staff' }
-  // },
-  // {
-  //   path: '/user',
-  //   name: 'UserHome',
-  //   component: UserHome,
-  //   meta: { requiresAuth: true, role:'relative' }
-  // },
   {
     path: '/user',
     component: () => import('@/views/relative/UserHome.vue'),

@@ -63,7 +63,16 @@ const submitLogin = () => {
                 ElMessage.success('登录成功')
                 router.push(userRole === 'staff' ? '/admin' : '/user')
             } catch (err) {
-                ElMessage.error('登录失败，请检查用户名或密码')
+                if (err.response) {
+                    // 有响应但登录失败，可能是账号密码错误
+                    ElMessage.error('登录失败，请检查用户名或密码')
+                } else if (err.request) {
+                    // 有请求但无响应，可能是后端未开启
+                    ElMessage.error('无法连接到服务器，请检查服务器状态')
+                } else {
+                    // 其他错误
+                    ElMessage.error('登录失败，请稍后再试')
+                }
             }
         }
     })
