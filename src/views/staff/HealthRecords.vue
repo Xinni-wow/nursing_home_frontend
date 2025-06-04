@@ -78,12 +78,10 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" width="120">
+                <el-table-column label="操作" width="180">
                     <template #default="{ row }">
-                        <div style="white-space: nowrap;">
-                            <el-button type="primary" size="small" @click="updateRecord(row)">保存</el-button>
-                            <el-button type="danger" size="small" @click="deleteRecord(row.id)">删除</el-button>
-                        </div>
+                        <el-button type="primary" size="small" @click="updateRecord(row)">保存</el-button>
+                        <el-button type="danger" size="small" @click="deleteRecord(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

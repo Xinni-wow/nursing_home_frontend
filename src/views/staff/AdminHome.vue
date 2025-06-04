@@ -29,6 +29,24 @@
                         </el-icon>
                         <span>健康记录查看</span>
                     </el-menu-item>
+                    <el-menu-item index="/admin/outing/review">
+                        <el-icon>
+                            <Document />
+                        </el-icon>
+                        <span>外出申请审批</span>
+                    </el-menu-item>
+                    <el-menu-item index="/admin/appointment/review">
+                        <el-icon>
+                            <Document />
+                        </el-icon>
+                        <span>预约来访审批</span>
+                    </el-menu-item>
+                    <el-menu-item index="/admin/diet/manage">
+                        <el-icon>
+                            <Upload />
+                        </el-icon>
+                        <span>餐饮管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
 
