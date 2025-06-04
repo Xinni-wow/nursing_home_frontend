@@ -4,8 +4,7 @@ import { ElMessage } from 'element-plus'
 
 const request = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',
-  timeout: 5000,
-  
+  timeout: 5000
 })
 
 // 请求拦截器：添加 token
@@ -31,11 +30,10 @@ request.interceptors.response.use(
   response => response.data,
   async error => {
     const originalRequest = error.config
-    
-    // 如果是登录接口的错误，直接返回错误
-    if (originalRequest.url === 'auth/login/') {
+      // 如果是登录接口的错误，直接返回错误
+      if (originalRequest.url === 'auth/login/') {
         return Promise.reject(error)
-    }
+      }
 
     // 如果是 401 错误，并且不是刷新 token 的请求
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -54,7 +52,7 @@ request.interceptors.response.use(
         // 调用刷新 token 接口
         const res = await request.post('auth/token/refresh/', {
           refresh: userStore.refresh
-        })
+        })        
 
         const newAccessToken = res.data.access
 
