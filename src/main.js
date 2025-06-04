@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
           // 已登录
           if (to.meta.role && to.meta.role !== userStore.role) {
               ElMessage.error('无权限访问该页面')
-              return next('/403') // 👈 跳转到 /403 页面
+              next(from)
           }
           next()
       } else {
