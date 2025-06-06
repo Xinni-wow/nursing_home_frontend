@@ -1,4 +1,3 @@
-// stores/user.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -15,7 +14,7 @@ export const useUserStore = defineStore('user', () => {
     refresh.value = refreshToken
   }
 
-  function logout(s) {
+  function logout() {
     token.value = ''
     refresh.value = ''
     role.value = ''
