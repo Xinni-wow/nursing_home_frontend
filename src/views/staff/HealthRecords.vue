@@ -96,7 +96,7 @@
             <el-form :inline="true">
                 <el-form-item label="选择老人">
                     <el-select v-model="selectedElderId" placeholder="请选择老人" style="width: 240px"
-                        @change="fetchHealthData" :disabled="elders.length === 0">
+                        @change="fetchHealthData" :disabled="elders.length === 0" filterable>
                         <el-option v-for="elder in elders" :key="elder.id" :label="`${elder.full_name}（ID：${elder.id}）`"
                             :value="elder.id" />
                     </el-select>
