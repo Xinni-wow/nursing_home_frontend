@@ -33,8 +33,9 @@
                 </el-table-column>
                 <el-table-column prop="blood_sugar" label="血糖 (mmol/L)" />
                 <el-table-column prop="respiratory_rate" label="呼吸频率 (次/分钟)" />
-                <el-table-column prop="oxygen_saturation" label="血氧 (%)" />
+                <el-table-column prop="oxygen_saturation" label="血氧饱和度 (%)" />
                 <el-table-column prop="weight" label="体重 (kg)" />
+                <el-table-column prop="notes" label="备注" />
             </el-table>
 
             <!-- 分页控件 -->
