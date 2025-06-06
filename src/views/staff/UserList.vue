@@ -5,24 +5,12 @@
         <!-- 搜索栏 -->
         <el-form :inline="true" @submit.prevent>
             <el-form :inline="true" @submit.prevent>
-                <el-form-item label="按用户名搜索">
-                    <el-input v-model="usernameKeyword" placeholder="输入用户名" @keyup.enter="searchByUsername" clearable />
-                    <el-button type="primary" @click="searchByUsername">搜索</el-button>
-                </el-form-item>
 
-                <el-form-item label="按真实姓名搜索">
-                    <el-input v-model="nameKeyword" placeholder="输入真实姓名" @keyup.enter="searchByName" clearable />
-                    <el-button type="primary" @click="searchByName">搜索</el-button>
-                </el-form-item>
-
-                <el-form-item label="按绑定老人姓名搜索">
-                    <el-input v-model="elderKeyword" placeholder="输入老人姓名" @keyup.enter="searchByElderName" clearable />
-                    <el-button type="primary" @click="searchByElderName">搜索</el-button>
-                </el-form-item>
-
-                <el-form-item style="width: 100%;">
-                    <el-button @click="fetchUsers">重置</el-button>
-                </el-form-item>
+                <el-input v-model="usernameKeyword" placeholder="输入用户名" clearable />
+                <el-input v-model="nameKeyword" placeholder="输入真实姓名" clearable />
+                <el-input v-model="elderKeyword" placeholder="输入老人姓名" clearable />
+                <el-button type="primary" @click="unifiedSearch">搜索</el-button>
+                <el-button @click="fetchUsers">重置</el-button>
             </el-form>
         </el-form>
 
@@ -99,6 +87,11 @@ const fetchUsers = async () => {
         const res = await axios.get('/staff/relatives/')
         users.value = res.data
         currentPage.value = 1
+
+        // 清空搜索输入框
+        usernameKeyword.value = ''
+        nameKeyword.value = ''
+        elderKeyword.value = ''
     } catch (err) {
         ElMessage.error('获取用户列表失败')
     } finally {
@@ -106,77 +99,7 @@ const fetchUsers = async () => {
     }
 }
 
-const searchByUsername = async () => {
-    const keyword = usernameKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relatives/search-by-username/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { username: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
-const searchByName = async () => {
-    const keyword = nameKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relatives/search-by-fullname/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { name: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
 const elderKeyword = ref('')
-
-const searchByElderName = async () => {
-    const keyword = elderKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relative/search-by-elder/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { elder_name: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
 const editDialogVisible = ref(false)
 const editForm = ref({})
 
@@ -220,6 +143,40 @@ const handleDelete = async (id) => {
             || err.message
         ElMessage.error(`删除失败：${errorMessage}`)
         console.error('删除失败详情:', err)
+    }
+}
+
+const unifiedSearch = async () => {
+    loading.value = true
+    try {
+        const params = {}
+
+        if (usernameKeyword.value.trim()) {
+            params.username = usernameKeyword.value.trim()
+        }
+
+        if (nameKeyword.value.trim()) {
+            params.full_name = nameKeyword.value.trim()
+        }
+
+        if (elderKeyword.value.trim()) {
+            params.elder_name = elderKeyword.value.trim()
+        }
+
+        let url = '/staff/relatives/'
+
+        // 有搜索条件，使用搜索接口
+        if (Object.keys(params).length > 0) {
+            url = '/staff/relatives/search/'
+        }
+
+        const res = await axios.get(url, { params })
+        users.value = res.data
+        currentPage.value = 1
+    } catch (err) {
+        ElMessage.error('搜索失败')
+    } finally {
+        loading.value = false
     }
 }
 
