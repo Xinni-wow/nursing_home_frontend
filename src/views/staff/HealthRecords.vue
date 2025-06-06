@@ -10,9 +10,18 @@
                     <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期"
                         @change="fetchRecordsByDate" />
                 </el-form-item>
+
+                <el-form-item label="按ID搜索">
+                    <el-input v-model="searchId" placeholder="输入老人ID" clearable />
+                </el-form-item>
+
+                <el-form-item label="按姓名搜索">
+                    <el-input v-model="searchName" placeholder="输入姓名" clearable />
+                </el-form-item>
             </el-form>
 
-            <el-table v-if="recordsByDate.length > 0" :data="recordsByDate" stripe style="width: 100%;">
+
+            <el-table v-if="filteredRecords.length > 0" :data="filteredRecords" stripe style="width: 100%;">
                 <el-table-column label="老人ID">
                     <template #default="{ row }">
                         {{ row.elder_info?.id }}
@@ -54,7 +63,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="呼吸频率 (/分)">
+                <el-table-column label="呼吸频率 (次/分钟)">
                     <template #default="{ row }">
                         <el-input v-model="row.respiratory_rate" size="small" />
                     </template>
@@ -122,8 +131,9 @@
                 </el-table-column>
                 <el-table-column prop="blood_sugar" label="血糖 (mmol/L)" />
                 <el-table-column prop="respiratory_rate" label="呼吸频率 (次/分钟)" />
-                <el-table-column prop="oxygen_saturation" label="血氧 (%)" />
+                <el-table-column prop="oxygen_saturation" label="血氧饱和度 (%)" />
                 <el-table-column prop="weight" label="体重 (kg)" />
+                <el-table-column prop="notes" label="备注" />
             </el-table>
 
             <!-- 分页控件 -->
@@ -171,6 +181,18 @@ const fetchRecordsByDate = async () => {
     }
 }
 fetchRecordsByDate()
+
+// 根据id或者姓名筛选
+const searchId = ref('')
+const searchName = ref('')
+const filteredRecords = computed(() => {
+    return recordsByDate.value.filter(record => {
+        const idMatch = searchId.value === '' || String(record.elder_info?.id).includes(searchId.value)
+        const nameMatch = searchName.value === '' || (record.elder_info?.full_name || '').includes(searchName.value)
+        return idMatch && nameMatch
+    })
+})
+
 const updateRecord = async (record) => {
     try {
         const formattedDate = formatDate(selectedDate.value)
