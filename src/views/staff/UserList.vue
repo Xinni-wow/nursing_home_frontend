@@ -44,21 +44,22 @@
             :page-size="pageSize" :total="users.length" @current-change="handlePageChange"
             :current-page="currentPage" />
 
+        <!-- 编辑弹窗 -->
         <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px" append-to-body="true" top='25vh'>
-            <el-form :model="editForm" label-width="100px" size="small">
+            <el-form :model="editForm" label-width="100px" size="small" :rules="rules" ref="formRef">
                 <el-form-item label="用户名">
                     <el-input v-model="editForm.username" disabled />
                 </el-form-item>
-                <el-form-item label="真实姓名">
+                <el-form-item label="真实姓名" prop="full_name">
                     <el-input v-model="editForm.full_name" />
                 </el-form-item>
-                <el-form-item label="手机号">
+                <el-form-item label="手机号" prop="phone">
                     <el-input v-model="editForm.phone" />
                 </el-form-item>
-                <el-form-item label="住址">
+                <el-form-item label="住址" prop="address">
                     <el-input v-model="editForm.address" />
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item label="邮箱" prop="email">
                     <el-input v-model="editForm.email" />
                 </el-form-item>
             </el-form>
@@ -108,14 +109,49 @@ const handleEdit = (user) => {
     editDialogVisible.value = true
 }
 
+const formRef = ref()
+const rules = ref({
+    full_name: [
+        { required: true, message: '真实姓名不能为空', trigger: 'blur' }
+    ],
+    phone: [
+        { required: true, message: '手机号不能为空', trigger: 'blur' }
+    ],
+    address: [
+        { required: true, message: '住址不能为空', trigger: 'blur' }
+    ],
+    email: [
+        { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur', 'change'] }
+    ]
+})
 const submitEdit = async () => {
     try {
+        // 调用表单验证
+        await formRef.value.validate()
+
+        // 验证通过，发起请求
         const res = await axios.patch(`/staff/relative/${editForm.value.id}/update/`, editForm.value)
         ElMessage.success('修改成功')
         editDialogVisible.value = false
-        fetchUsers() // 重新拉取用户列表
+        fetchUsers()
     } catch (err) {
-        ElMessage.error('修改失败')
+        // 判断是否是表单验证失败
+        if (err instanceof Error && err.message === 'Validate error') {
+            ElMessage.warning('请填写必填字段')
+            return
+        }
+
+        // 提取后端返回的具体字段错误信息
+        const fieldErrors = err.response?.data?.data || {}
+
+        // 遍历所有字段错误，并展示第一条错误信息作为提示
+        const messages = Object.values(fieldErrors).flat()
+
+        if (messages.length > 0) {
+            ElMessage.error(messages[0])
+        } else {
+            ElMessage.error('修改失败')
+        }
     }
 }
 
