@@ -130,10 +130,11 @@ const updateCharts = () => {
         title: { text: '近7日健康趋势' },
         tooltip: { trigger: 'axis' },
         legend: {
-            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)']
+            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)'],
+            textStyle: { fontSize: 14 }
         },
-        xAxis: { type: 'category', data: dates },
-        yAxis: { type: 'value' },
+        xAxis: { type: 'category', data: dates, axisLabel: { fontSize: 15 } },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [
             { name: '体温 (°C)', type: 'line', data: temperature },
             { name: '心率 (bpm)', type: 'line', data: heartRate },
@@ -161,8 +162,9 @@ const updateCharts = () => {
                 '血氧 (%)',
                 '体重 (kg)'
             ]
+            , axisLabel: { fontSize: 13 }
         },
-        yAxis: { type: 'value' },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [{
             type: 'bar',
             data: [
@@ -189,3 +191,17 @@ onMounted(() => {
     fetchElders()
 })
 </script>
+<style scoped>
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+
+::v-deep(.el-table) {
+    font-size: 16px;
+}
+
+::v-deep(.echarts) {
+    font-size: 15px;
+}
+</style>

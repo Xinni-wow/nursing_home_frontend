@@ -5,7 +5,6 @@
         <!-- 搜索栏 -->
         <el-form :inline="true" @submit.prevent>
             <el-form :inline="true" @submit.prevent>
-
                 <el-input v-model="usernameKeyword" placeholder="输入用户名" clearable />
                 <el-input v-model="nameKeyword" placeholder="输入真实姓名" clearable />
                 <el-input v-model="elderKeyword" placeholder="输入老人姓名" clearable />
@@ -33,8 +32,8 @@
             </el-table-column>
             <el-table-column label="操作" width="160">
                 <template #default="scope">
-                    <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -236,7 +235,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.user-list {}
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 15px;
+}
 
 .el-input {
     width: 150px;

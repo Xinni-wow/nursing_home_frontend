@@ -134,8 +134,17 @@ const resetForm = () => {
 }
 </script>
 
-<style scoped>
+<style>
 .text-lg {
     font-size: 18px;
+}
+
+.el-form-item__label {
+    font-size: 16px;
+}
+
+.el-input__inner,
+.el-input-number__inner {
+    font-size: 15px;
 }
 </style>

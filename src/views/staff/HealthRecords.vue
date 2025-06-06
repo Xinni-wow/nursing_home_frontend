@@ -89,8 +89,8 @@
 
                 <el-table-column label="操作" width="180">
                     <template #default="{ row }">
-                        <el-button type="primary" size="small" @click="updateRecord(row)">保存</el-button>
-                        <el-button type="danger" size="small" @click="deleteRecord(row.id)">删除</el-button>
+                        <el-button type="primary" @click="updateRecord(row)">保存</el-button>
+                        <el-button type="danger" @click="deleteRecord(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -309,10 +309,11 @@ const updateCharts = () => {
         title: { text: '近7日健康趋势' },
         tooltip: { trigger: 'axis' },
         legend: {
-            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)']
+            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)'],
+            textStyle: { fontSize: 14 }
         },
-        xAxis: { type: 'category', data: dates },
-        yAxis: { type: 'value' },
+        xAxis: { type: 'category', data: dates, axisLabel: { fontSize: 15 } },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [
             { name: '体温 (°C)', type: 'line', data: temperature },
             { name: '心率 (bpm)', type: 'line', data: heartRate },
@@ -340,8 +341,9 @@ const updateCharts = () => {
                 '血氧 (%)',
                 '体重 (kg)'
             ]
+            , axisLabel: { fontSize: 12.5 }
         },
-        yAxis: { type: 'value' },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [{
             type: 'bar',
             data: [
@@ -368,3 +370,20 @@ onMounted(() => {
     fetchElders()
 })
 </script>
+<style scoped>
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 16px;
+}
+
+::v-deep(.echarts) {
+    font-size: 15px;
+}
+</style>

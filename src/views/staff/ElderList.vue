@@ -34,8 +34,8 @@
             <el-table-column prop="id_number" label="身份证号" />
             <el-table-column label="操作" width="180">
                 <template #default="{ row }">
-                    <el-button size="small" type="primary" @click="editElder(row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="deleteElder(row)">删除</el-button>
+                    <el-button type="primary" @click="editElder(row)">编辑</el-button>
+                    <el-button type="danger" @click="deleteElder(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -258,5 +258,13 @@ getElderList()
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 15px;
 }
 </style>
