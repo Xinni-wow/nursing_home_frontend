@@ -22,7 +22,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="handleRetrieve">找回密码</el-button>
+                    <el-button type="primary" @click="handleRetrieve">重置密码</el-button>
                     <el-button @click="goBack">返回登录</el-button>
                 </el-form-item>
             </el-form>
