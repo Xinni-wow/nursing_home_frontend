@@ -1,7 +1,10 @@
 <template>
     <div class="login-container">
         <el-card class="login-card">
-            <h2 class="title">养老院管理系统</h2>
+            <h2 class="title">
+                <img src="/logo.png" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+                蓝天养老院管理系统
+            </h2>
 
             <el-form :model="form" :rules="rules" ref="loginForm" label-width="70px">
                 <el-form-item label="用户名" prop="username">
@@ -15,10 +18,10 @@
                 <el-form-item>
                     <el-button type="primary" @click="submitLogin" style="width: 100%">登录</el-button>
                 </el-form-item>
-                <el-form-item>
-                    <el-link type="info" @click="toRegister">没有账号？去注册</el-link>
-                    <el-link type="primary" @click="toForgotPassword">忘记密码？</el-link>
-                </el-form-item>
+                <div style="display: flex;justify-content: space-between; align-items: center;">
+                    <el-link type="primary" @click="toRegister">没有账号？去注册</el-link>
+                    <el-link type="primary" @click="toForgotPassword">忘记密码？去重置</el-link>
+                </div>
             </el-form>
         </el-card>
     </div>
@@ -92,16 +95,22 @@ const toForgotPassword = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f0f2f5;
+    background: url('/background.png');
+    background-size: cover;
 }
 
 .login-card {
+    margin-right: 50%;
     width: 400px;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {
     text-align: center;
     margin-bottom: 20px;
+    color: #00a0ea;
 }
 </style>

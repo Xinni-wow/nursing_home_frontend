@@ -90,3 +90,17 @@ onMounted(() => {
     fetchUserInfo()
 })
 </script>
+<style scoped>
+/* 穿透 Element Plus 的深层样式*/
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+.el-button {
+    font-size: 16px;
+}
+</style>

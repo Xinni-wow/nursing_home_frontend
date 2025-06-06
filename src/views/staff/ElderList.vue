@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding: 20px; padding-top: 0%;">
         <h2>老人信息管理</h2>
 
         <!-- 搜索 -->
@@ -219,13 +219,21 @@ const submitForm = async () => {
 const deleteElder = (elder) => {
     ElMessageBox.confirm(`确认删除老人 ${elder.full_name} 吗？`, '提示', {
         type: 'warning'
-    }).then(() => {
-        axios.delete(`/staff/elders/${elder.id}/delete/`)
-            .then(() => {
-                ElMessage.success('删除成功')
-                getElderList()
-            })
-    }).catch(() => { })
+    }).then(async () => {
+        try {
+            await axios.delete(`/staff/elders/${elder.id}/delete/`)
+            ElMessage.success('删除成功')
+            getElderList()
+        } catch (err) {
+            // 获取并显示后端返回的错误信息
+            const errorMsg = err?.response?.data?.data?.error
+                || '删除失败，请稍后再试'
+            ElMessage.error(errorMsg)
+            console.error(err)
+        }
+    }).catch(() => {
+        // 取消删除
+    })
 }
 
 // 分页功能

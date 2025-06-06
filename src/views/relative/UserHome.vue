@@ -2,7 +2,10 @@
     <el-container style="height: 100vh; flex-direction: column;">
         <!-- 顶部导航栏 -->
         <el-header class="header">
-            <div class="logo">养老院陪伴系统</div>
+            <div class="logo_title">
+                <img src="/logo2.png" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+                蓝天养老院家属系统
+            </div>
             <div class="header-right">
                 欢迎你，{{ username }}
                 <el-button type="danger" size="small" @click="logout">退出</el-button>
@@ -80,7 +83,7 @@ const handleMenuSelect = (index) => {
     padding: 0 20px;
 }
 
-.logo {
+.logo_title {
     font-size: 20px;
     font-weight: bold;
 }

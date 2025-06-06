@@ -23,7 +23,7 @@
                 <el-form-item label="电话" prop="phone">
                     <el-input v-model="form.phone" />
                 </el-form-item>
-                <p>*密保请必填，用于找回密码</p>
+                <p style="color: red;">*密保请必填并记住答案，用于找回/重置密码</p>
                 <el-form-item label="密保问题" prop="security_question">
                     <el-input v-model="form.security_question" />
                 </el-form-item>
@@ -117,12 +117,19 @@ const toLogin = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f0f2f5;
+    background: url('/background.png');
+    background-size: cover;
+}
+
+.el-form-item {
+    margin-bottom: 12px;
 }
 
 .register-card {
     width: 450px;
-    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {

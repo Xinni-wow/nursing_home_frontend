@@ -1,5 +1,5 @@
 <template>
-    <div class="user-list">
+    <div style="padding: 20px;padding-top: 0%;">
         <h2 style="margin-bottom: 20px">用户管理</h2>
 
         <!-- 搜索栏 -->
@@ -236,9 +236,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.user-list {
-    padding: 20px;
-}
+.user-list {}
 
 .el-input {
     width: 150px;

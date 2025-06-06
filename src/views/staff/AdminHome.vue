@@ -3,7 +3,10 @@
         <el-container style="min-height: 100vh;">
             <!-- 左侧导航 -->
             <el-aside width="200px" class="sidebar">
-                <div class="logo">养老院后台</div>
+                <div class="logo">
+                    <img src="/logo.png" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+                    蓝天养老
+                </div>
                 <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @select="handleSelect" router>
                     <el-menu-item index="/admin/users">
                         <el-icon>
@@ -60,7 +63,7 @@
                     </div>
                 </el-header>
 
-                <!-- 滚动主内容区 -->
+                <!-- 主内容区 -->
                 <el-main class="scrollable-main">
                     <div class="scaled-wrapper">
                         <router-view />
@@ -148,7 +151,7 @@ const logout = () => {
 }
 
 .scrollable-main {
-    margin-top: 60px;
+    margin-top: 8vh;
     margin-left: 200px;
     padding: 20px;
     overflow-y: auto;

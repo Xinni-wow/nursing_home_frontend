@@ -19,35 +19,35 @@
                 </el-form-item>
 
                 <el-form-item label="体温 (°C)">
-                    <el-input-number v-model="form.temperature" :step="0.1" :min="30" :max="45" />
+                    <el-input-number v-model="form.temperature" :step="0.1" :min="33" :max="42" />
                 </el-form-item>
 
                 <el-form-item label="血压 (收缩压)">
-                    <el-input-number v-model="form.blood_pressure_systolic" :min="50" :max="250" />
+                    <el-input-number v-model="form.blood_pressure_systolic" :min="70" :max="250" />
                 </el-form-item>
 
                 <el-form-item label="血压 (舒张压)">
-                    <el-input-number v-model="form.blood_pressure_diastolic" :min="30" :max="150" />
+                    <el-input-number v-model="form.blood_pressure_diastolic" :min="50" :max="120" />
                 </el-form-item>
 
                 <el-form-item label="心率 (bpm)">
-                    <el-input-number v-model="form.heart_rate" :min="30" :max="200" />
+                    <el-input-number v-model="form.heart_rate" :min="40" :max="160" />
                 </el-form-item>
 
                 <el-form-item label="血糖 (mmol/L)">
-                    <el-input-number v-model="form.blood_sugar" :step="0.1" :min="0" :max="30" />
+                    <el-input-number v-model="form.blood_sugar" :step="0.1" :min="2.2" :max="25" />
                 </el-form-item>
 
                 <el-form-item label="呼吸频率 (/分)">
-                    <el-input-number v-model="form.respiratory_rate" :min="5" :max="60" />
+                    <el-input-number v-model="form.respiratory_rate" :min="8" :max="30" />
                 </el-form-item>
 
                 <el-form-item label="血氧饱和度 (%)">
-                    <el-input-number v-model="form.oxygen_saturation" :min="50" :max="100" />
+                    <el-input-number v-model="form.oxygen_saturation" :min="85" :max="100" />
                 </el-form-item>
 
                 <el-form-item label="体重 (kg)">
-                    <el-input-number v-model="form.weight" :step="0.1" :min="10" :max="300" />
+                    <el-input-number v-model="form.weight" :step="0.1" :min="20" :max="150" />
                 </el-form-item>
 
                 <el-form-item>

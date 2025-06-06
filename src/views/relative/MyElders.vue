@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <h2>我家老人</h2>
-            <el-button type="primary" @click="$router.push('/user/add-elder')">添加老人</el-button>
+            <el-button type="primary" @click="$router.push('/user/add-elder')" style="font-size: 16px;">添加老人</el-button>
         </div>
 
         <el-row :gutter="20">
@@ -68,7 +68,10 @@ const confirmDelete = (id) => {
             ElMessage.success('删除成功')
             fetchElders() // 刷新列表
         } catch (err) {
-            ElMessage.error('删除失败')
+            // 显示后端返回的错误信息
+            const errorMsg = err?.response?.data?.data?.error
+                || '删除失败，请稍后再试'
+            ElMessage.error(errorMsg)
             console.error(err)
         }
     }).catch(() => {

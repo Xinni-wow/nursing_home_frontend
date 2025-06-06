@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 20px;">
+    <div style="padding: 20px; ">
         <h2>健康信息管理</h2>
 
         <el-card style="margin-bottom: 40px;">
