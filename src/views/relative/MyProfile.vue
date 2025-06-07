@@ -91,7 +91,6 @@ onMounted(() => {
 })
 </script>
 <style scoped>
-/* 穿透 Element Plus 的深层样式*/
 ::v-deep(.el-form-item__label) {
     font-size: 16px;
 }
