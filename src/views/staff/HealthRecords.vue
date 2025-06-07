@@ -153,7 +153,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import axios from '@/utils/request'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 日期模块
 const selectedDate = ref(new Date())
@@ -224,10 +224,19 @@ const updateRecord = async (record) => {
 
 const deleteRecord = async (recordId) => {
     try {
+        await ElMessageBox.confirm('确定要删除这条记录吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        })
+
         await axios.delete(`/health/records/${recordId}/`)
         ElMessage.success('删除成功')
-        fetchRecordsByDate()  // 删除后刷新日期列表
+        fetchRecordsByDate()  // 删除后刷新
     } catch (err) {
+        if (err === 'cancel') {
+            return
+        }
         ElMessage.error('删除失败')
     }
 }
