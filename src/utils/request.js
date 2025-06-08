@@ -1,3 +1,5 @@
+// utils/request.js - 全局封装 axios 实例，统一注入 token、处理错误与刷新机制
+
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
@@ -5,7 +7,6 @@ import { ElMessage } from 'element-plus'
 const request = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',
   timeout: 5000,
-
 })
 
 // 请求拦截器：添加 token
@@ -19,16 +20,16 @@ request.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 
-// // 响应拦截器
-// request.interceptors.response.use(
-//   response => response.data,
-//   error => {
-//     return Promise.reject(error)
-//   }
-// )
 // 响应拦截器：统一处理错误和刷新 token
 request.interceptors.response.use(
-  response => response.data,
+  response => {
+    // 如果响应类型是 blob（例如导出文件），保留完整响应对象
+    if (response.request.responseType === 'blob') {
+      return response
+    }
+    // 否则默认返回 response.data
+    return response.data
+  },
   async error => {
     const originalRequest = error.config
 
@@ -47,7 +48,7 @@ request.interceptors.response.use(
 
       try {
         // 调用刷新 token 接口
-        const res = await request.post('auth/token/refresh/', {
+        const res = await request.post('/auth/token/refresh/', {
           refresh: userStore.refresh
         })
 
@@ -65,6 +66,7 @@ request.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
         return request(originalRequest)
       } catch (refreshError) {
+        console.error('刷新 token 失败:', refreshError)
         // 刷新失败，跳转登录页
         ElMessage.error('登录信息已过期，请重新登录')
         userStore.logout()
@@ -75,4 +77,5 @@ request.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
 export default request

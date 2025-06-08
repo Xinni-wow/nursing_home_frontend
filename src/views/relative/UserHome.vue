@@ -27,7 +27,16 @@
                       <el-menu-item index="/user/appointmentlist">预约记录</el-menu-item>
                     </el-sub-menu>
                     <el-menu-item index="/user/diet/list">餐饮查看</el-menu-item>
-                    <el-menu-item index="/user/checkin">入住办理</el-menu-item>
+                    <el-sub-menu index="checkin-management">
+                      <template #title>
+                        <span>入住管理</span>
+                      </template>
+                      <el-menu-item index="/user/checkin">入住办理</el-menu-item>
+                      <el-menu-item index="/user/renew">续费办理</el-menu-item>
+                      <el-menu-item index="/user/checkins">入住记录</el-menu-item>
+                      <el-menu-item index="/user/bills">我的账单</el-menu-item>
+                    </el-sub-menu>
+
                 </el-menu>
 
             </el-aside>

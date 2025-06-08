@@ -47,6 +47,18 @@
                         </el-icon>
                         <span>餐饮管理</span>
                     </el-menu-item>
+                    <el-menu-item index="/admin/checkins">
+                        <el-icon>
+                            <Checked />
+                        </el-icon>
+                        <span>入住记录管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="/admin/bills">
+                        <el-icon>
+                            <List />
+                        </el-icon>
+                        <span>账单管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
 
@@ -75,7 +87,7 @@
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { User, Avatar, Upload, Document } from '@element-plus/icons-vue'
+import { User, Avatar, Upload, Document,Checked,List} from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()

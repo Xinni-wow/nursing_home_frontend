@@ -17,3 +17,20 @@ export function submitCheckIn(data) {
 export function getMyElders() {
   return request.get('elders/')
 }
+
+export function generatePayUrl(data) {
+  return request.post('/generate_pay_url/', data)
+}
+
+export function checkoutElder(checkinId) {
+  return request.post(`checkout/${checkinId}/`)
+}
+
+export function getCheckinList(isAdmin = false) {
+  const url = isAdmin ? 'checkins/admin/' : 'checkins/user/'
+  return request.get(url)
+}
+
+export function renewCheckIn(data) {
+  return request.post('checkin/renew/', data)
+}
