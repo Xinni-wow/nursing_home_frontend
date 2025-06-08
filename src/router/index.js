@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
-
-
 import Login from '@/views/Login.vue'
 import AdminHome from '@/views/staff/AdminHome.vue'
 import UserHome from '@/views/relative/UserHome.vue'
 import Register from '@/views/Register.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import CheckIn from '../views/CheckIn.vue'
+
 const routes = [
   {
     path: '/',
@@ -52,12 +52,13 @@ const routes = [
       { path: 'outinglist',name:'OutingList', component: () => import('@/views/relative/OutingList.vue') },
       { path: 'outingform', component: () => import('@/views/relative/OutingForm.vue') },
       { path: 'outing/:id',name: 'OutingEdit', component: () => import('@/views/relative/OutingEdit.vue') },
-      {path: 'outing/:id/cancel-confirm',name: 'OutingDelete',component: () => import('@/views/relative/OutingDelete.vue')},
-      {path: 'appointmentlist',name:'AppointmentList', component: () => import('@/views/relative/ApponintmentList.vue')},
+      { path: 'outing/:id/cancel-confirm',name: 'OutingDelete',component: () => import('@/views/relative/OutingDelete.vue')},
+      { path: 'appointmentlist',name:'AppointmentList', component: () => import('@/views/relative/ApponintmentList.vue')},
       { path: 'appointmentform', component: () => import('@/views/relative/AppointmentForm.vue') },
       { path: 'appointment/:id',name: 'VisitEdit', component: () => import('@/views/relative/AppointmentEdit.vue') },
-      {path:'appointment/qscode',component:()=>import('@/views/relative/AppointmentCode.vue')},
-      {path:'diet/list',component:()=>import('@/views/relative/MenuDisplay.vue')},
+      { path:'appointment/qscode',component:()=>import('@/views/relative/AppointmentCode.vue')},
+      { path:'diet/list',component:()=>import('@/views/relative/MenuDisplay.vue')},
+      { path: 'checkin', name: 'CheckIn', component: () => import('@/views/relative/CheckIn.vue') }
     ],
     meta: { requiresAuth: true, role:'relative' }
   },
@@ -76,7 +77,12 @@ const routes = [
     ],
     meta: { requiresAuth: true, role:'staff' }
   },
+
+  {
+    path: '/checkin', component: CheckIn
+  },
 ]
+
 
 const router = createRouter({
   history: createWebHistory(),

@@ -27,6 +27,7 @@
                       <el-menu-item index="/user/appointmentlist">预约记录</el-menu-item>
                     </el-sub-menu>
                     <el-menu-item index="/user/diet/list">餐饮查看</el-menu-item>
+                    <el-menu-item index="/user/checkin">入住办理</el-menu-item>
                 </el-menu>
 
             </el-aside>

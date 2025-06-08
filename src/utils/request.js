@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 const request = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',
   timeout: 5000,
-  
+
 })
 
 // 请求拦截器：添加 token
