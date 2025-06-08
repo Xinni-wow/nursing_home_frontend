@@ -28,25 +28,25 @@
                     </el-menu-item>
                     <el-menu-item index="/admin/health/records">
                         <el-icon>
-                            <Document />
+                            <TrendCharts />
                         </el-icon>
                         <span>健康记录查看</span>
                     </el-menu-item>
                     <el-menu-item index="/admin/outing/review">
                         <el-icon>
-                            <Document />
+                            <Place />
                         </el-icon>
                         <span>外出申请审批</span>
                     </el-menu-item>
                     <el-menu-item index="/admin/appointment/review">
                         <el-icon>
-                            <Document />
+                            <HomeFilled />
                         </el-icon>
                         <span>预约来访审批</span>
                     </el-menu-item>
                     <el-menu-item index="/admin/diet/manage">
                         <el-icon>
-                            <Upload />
+                            <DishDot />
                         </el-icon>
                         <span>餐饮管理</span>
                     </el-menu-item>
@@ -78,7 +78,7 @@
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { User, Avatar, Upload, Document } from '@element-plus/icons-vue'
+import { User, Avatar, Upload, DishDot, Place, HomeFilled, TrendCharts } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
