@@ -1,6 +1,4 @@
 import Login from '@/views/Login.vue'
-import AdminHome from '@/views/staff/AdminHome.vue'
-import UserHome from '@/views/relative/UserHome.vue'
 import Register from '@/views/Register.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import CheckIn from '../views/relative/CheckIn.vue'

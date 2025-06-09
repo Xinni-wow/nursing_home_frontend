@@ -2,7 +2,10 @@
     <el-container style="height: 100vh; flex-direction: column;">
         <!-- 顶部导航栏 -->
         <el-header class="header">
-            <div class="logo">养老院陪伴系统</div>
+            <div class="logo_title">
+                <img src="/logo2.png" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+                蓝天养老院家属系统
+            </div>
             <div class="header-right">
                 欢迎你，{{ username }}
                 <el-button type="danger" size="small" @click="logout">退出</el-button>
@@ -13,20 +16,63 @@
             <!-- 左侧导航栏 -->
             <el-aside width="200px" class="sidebar">
                 <el-menu :default-active="activeMenu" @select="handleMenuSelect" router>
-                    <el-menu-item index="/user/profile">个人信息</el-menu-item>
-                    <el-menu-item index="/user/elders">我家老人</el-menu-item>
-                    <el-menu-item index="/user/health">健康状况</el-menu-item>
+                    <el-menu-item index="/user/profile">
+                        <el-icon>
+                            <User />
+                        </el-icon>个人信息
+                    </el-menu-item>
+                    <el-menu-item index="/user/elders">
+                        <el-icon>
+                            <HomeFilled />
+                        </el-icon>我家老人
+                    </el-menu-item>
+                    <el-menu-item index="/user/health">
+                        <el-icon>
+                            <TrendCharts />
+                        </el-icon>健康状况
+                    </el-menu-item>
+
                     <el-sub-menu index="/user/outinglist">
-                      <template #title>外出申请</template>
-                      <el-menu-item index="/user/outingform">填写申请</el-menu-item>
-                      <el-menu-item index="/user/outinglist">申请记录</el-menu-item>
+                        <template #title>
+                            <el-icon>
+                                <Calendar />
+                            </el-icon>外出申请
+                        </template>
+                        <el-menu-item index="/user/outingform">
+                            <el-icon>
+                                <DocumentAdd />
+                            </el-icon>填写申请
+                        </el-menu-item>
+                        <el-menu-item index="/user/outinglist">
+                            <el-icon>
+                                <Document />
+                            </el-icon>申请记录
+                        </el-menu-item>
                     </el-sub-menu>
+
                     <el-sub-menu index="/user/appointmentlist">
-                      <template #title>预约来访</template>
-                      <el-menu-item index="/user/appointmentform">预约申请</el-menu-item>
-                      <el-menu-item index="/user/appointmentlist">预约记录</el-menu-item>
+                        <template #title>
+                            <el-icon>
+                                <List />
+                            </el-icon>预约来访
+                        </template>
+                        <el-menu-item index="/user/appointmentform">
+                            <el-icon>
+                                <DocumentAdd />
+                            </el-icon>预约申请
+                        </el-menu-item>
+                        <el-menu-item index="/user/appointmentlist">
+                            <el-icon>
+                                <Document />
+                            </el-icon>预约记录
+                        </el-menu-item>
                     </el-sub-menu>
-                    <el-menu-item index="/user/diet/list">餐饮查看</el-menu-item>
+
+                    <el-menu-item index="/user/diet/list">
+                        <el-icon>
+                            <DishDot />
+                        </el-icon>餐饮查看
+                    </el-menu-item>
                     <el-sub-menu index="checkin-management">
                       <template #title>
                         <span>入住管理</span>
@@ -56,6 +102,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { computed } from 'vue'
 import { ElMessage } from 'element-plus'
+import { HomeFilled, User, DocumentAdd, List, Calendar, Document, DishDot, TrendCharts } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -90,7 +137,7 @@ const handleMenuSelect = (index) => {
     padding: 0 20px;
 }
 
-.logo {
+.logo_title {
     font-size: 20px;
     font-weight: bold;
 }
@@ -118,7 +165,7 @@ const handleMenuSelect = (index) => {
     padding: 20px;
     transform: scale(0.8);
     transform-origin: top left;
-    width: 125%;
-    height: auto;
+    width: 120%;
+    height: 100%;
 }
 </style>
