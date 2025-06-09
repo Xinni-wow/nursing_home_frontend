@@ -33,8 +33,9 @@
                 </el-table-column>
                 <el-table-column prop="blood_sugar" label="血糖 (mmol/L)" />
                 <el-table-column prop="respiratory_rate" label="呼吸频率 (次/分钟)" />
-                <el-table-column prop="oxygen_saturation" label="血氧 (%)" />
+                <el-table-column prop="oxygen_saturation" label="血氧饱和度 (%)" />
                 <el-table-column prop="weight" label="体重 (kg)" />
+                <el-table-column prop="notes" label="备注" />
             </el-table>
 
             <!-- 分页控件 -->
@@ -54,10 +55,8 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import axios from '@/utils/request'
-import { ElMessage } from 'element-plus'
 import VChart from 'vue-echarts'
 
-// 注册 ECharts 组件
 import { use } from 'echarts/core'
 import { LineChart, BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components'
@@ -128,13 +127,14 @@ const updateCharts = () => {
     const weight = records.map(r => r.weight)
 
     lineChartOption.value = {
-        title: { text: '健康趋势（折线图）' },
+        title: { text: '近7日健康趋势' },
         tooltip: { trigger: 'axis' },
         legend: {
-            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)']
+            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)'],
+            textStyle: { fontSize: 14 }
         },
-        xAxis: { type: 'category', data: dates },
-        yAxis: { type: 'value' },
+        xAxis: { type: 'category', data: dates, axisLabel: { fontSize: 15 } },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [
             { name: '体温 (°C)', type: 'line', data: temperature },
             { name: '心率 (bpm)', type: 'line', data: heartRate },
@@ -148,7 +148,7 @@ const updateCharts = () => {
     }
 
     barChartOption.value = {
-        title: { text: '健康指标平均值（条形图）' },
+        title: { text: '近7日健康指标平均值' },
         tooltip: {},
         xAxis: {
             type: 'category',
@@ -162,8 +162,9 @@ const updateCharts = () => {
                 '血氧 (%)',
                 '体重 (kg)'
             ]
+            , axisLabel: { fontSize: 13 }
         },
-        yAxis: { type: 'value' },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [{
             type: 'bar',
             data: [
@@ -180,7 +181,7 @@ const updateCharts = () => {
     }
 }
 
-// 简单平均函数
+// 平均函数
 const average = arr => {
     if (arr.length === 0) return 0
     return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1)
@@ -190,3 +191,17 @@ onMounted(() => {
     fetchElders()
 })
 </script>
+<style scoped>
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+
+::v-deep(.el-table) {
+    font-size: 16px;
+}
+
+::v-deep(.echarts) {
+    font-size: 15px;
+}
+</style>

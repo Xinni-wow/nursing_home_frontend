@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding: 20px; padding-top: 0%;">
         <h2>老人信息管理</h2>
 
         <!-- 搜索 -->
@@ -18,9 +18,10 @@
                         fit="cover" :preview-src-list="[row.photo || defaultImage]" preview-teleported="true" />
                 </template>
             </el-table-column>
-            <el-table-column prop="id" label="ID" />
-            <el-table-column prop="full_name" label="姓名" />
-            <el-table-column label="家属">
+            <el-table-column prop="id" label="ID" width="60px" />
+            <el-table-column prop="full_name" label="姓名" width="80px" />
+            <el-table-column prop="gender" label="性别" width="60px" />
+            <el-table-column label="家属" width="130px">
                 <template #default="{ row }">
                     <div>
                         <div>用户名：{{ row.user.username }}</div>
@@ -29,13 +30,22 @@
                 </template>
             </el-table-column>
             <el-table-column prop="relationship" label="与家属关系" />
-            <el-table-column prop="gender" label="性别" />
-            <el-table-column prop="birth_date" label="出生日期" />
-            <el-table-column prop="id_number" label="身份证号" />
+            <el-table-column label="年龄" width="70px">
+                <template #default="{ row }">
+                    {{ calculateAge(row.birth_date) }} 岁
+                </template>
+            </el-table-column>
+            <el-table-column prop="id_number" label="身份证号" width="180px" />
+            <el-table-column prop="health_status" label="健康状况" />
+            <el-table-column label="备注">
+                <template #default="{ row }">
+                    {{ row.notes ? (row.notes.length > 20 ? row.notes.slice(0, 20) + '...' : row.notes) : '-' }}
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="180">
                 <template #default="{ row }">
-                    <el-button size="small" type="primary" @click="editElder(row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="deleteElder(row)">删除</el-button>
+                    <el-button type="primary" @click="editElder(row)">编辑</el-button>
+                    <el-button type="danger" @click="deleteElder(row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -134,7 +144,17 @@ const handleSearch = () => {
             currentPage.value = 1
         })
 }
-
+const calculateAge = (birthDate) => {
+    if (!birthDate) return '-'
+    const today = new Date()
+    const birth = new Date(birthDate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const m = today.getMonth() - birth.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--
+    }
+    return age
+}
 const resetSearch = () => {
     searchName.value = ''
     getElderList()
@@ -219,13 +239,21 @@ const submitForm = async () => {
 const deleteElder = (elder) => {
     ElMessageBox.confirm(`确认删除老人 ${elder.full_name} 吗？`, '提示', {
         type: 'warning'
-    }).then(() => {
-        axios.delete(`/staff/elders/${elder.id}/delete/`)
-            .then(() => {
-                ElMessage.success('删除成功')
-                getElderList()
-            })
-    }).catch(() => { })
+    }).then(async () => {
+        try {
+            await axios.delete(`/staff/elders/${elder.id}/delete/`)
+            ElMessage.success('删除成功')
+            getElderList()
+        } catch (err) {
+            // 获取并显示后端返回的错误信息
+            const errorMsg = err?.response?.data?.data?.error
+                || '删除失败，请稍后再试'
+            ElMessage.error(errorMsg)
+            console.error(err)
+        }
+    }).catch(() => {
+        // 取消删除
+    })
 }
 
 // 分页功能
@@ -250,5 +278,13 @@ getElderList()
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 15px;
 }
 </style>

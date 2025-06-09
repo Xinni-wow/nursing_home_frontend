@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 20px;">
+    <div style="padding: 20px; ">
         <h2>健康信息管理</h2>
 
         <el-card style="margin-bottom: 40px;">
@@ -10,9 +10,18 @@
                     <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期"
                         @change="fetchRecordsByDate" />
                 </el-form-item>
+
+                <el-form-item label="按ID搜索">
+                    <el-input v-model="searchId" placeholder="输入老人ID" clearable />
+                </el-form-item>
+
+                <el-form-item label="按姓名搜索">
+                    <el-input v-model="searchName" placeholder="输入姓名" clearable />
+                </el-form-item>
             </el-form>
 
-            <el-table v-if="recordsByDate.length > 0" :data="recordsByDate" stripe style="width: 100%;">
+
+            <el-table v-if="filteredRecords.length > 0" :data="filteredRecords" stripe style="width: 100%;">
                 <el-table-column label="老人ID">
                     <template #default="{ row }">
                         {{ row.elder_info?.id }}
@@ -54,7 +63,7 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="呼吸频率 (/分)">
+                <el-table-column label="呼吸频率 (次/分钟)">
                     <template #default="{ row }">
                         <el-input v-model="row.respiratory_rate" size="small" />
                     </template>
@@ -80,8 +89,8 @@
 
                 <el-table-column label="操作" width="180">
                     <template #default="{ row }">
-                        <el-button type="primary" size="small" @click="updateRecord(row)">保存</el-button>
-                        <el-button type="danger" size="small" @click="deleteRecord(row.id)">删除</el-button>
+                        <el-button type="primary" @click="updateRecord(row)">保存</el-button>
+                        <el-button type="danger" @click="deleteRecord(row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -96,7 +105,7 @@
             <el-form :inline="true">
                 <el-form-item label="选择老人">
                     <el-select v-model="selectedElderId" placeholder="请选择老人" style="width: 240px"
-                        @change="fetchHealthData" :disabled="elders.length === 0">
+                        @change="fetchHealthData" :disabled="elders.length === 0" filterable>
                         <el-option v-for="elder in elders" :key="elder.id" :label="`${elder.full_name}（ID：${elder.id}）`"
                             :value="elder.id" />
                     </el-select>
@@ -122,8 +131,9 @@
                 </el-table-column>
                 <el-table-column prop="blood_sugar" label="血糖 (mmol/L)" />
                 <el-table-column prop="respiratory_rate" label="呼吸频率 (次/分钟)" />
-                <el-table-column prop="oxygen_saturation" label="血氧 (%)" />
+                <el-table-column prop="oxygen_saturation" label="血氧饱和度 (%)" />
                 <el-table-column prop="weight" label="体重 (kg)" />
+                <el-table-column prop="notes" label="备注" />
             </el-table>
 
             <!-- 分页控件 -->
@@ -143,7 +153,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import axios from '@/utils/request'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 // 日期模块
 const selectedDate = ref(new Date())
@@ -171,6 +181,18 @@ const fetchRecordsByDate = async () => {
     }
 }
 fetchRecordsByDate()
+
+// 根据id或者姓名筛选
+const searchId = ref('')
+const searchName = ref('')
+const filteredRecords = computed(() => {
+    return recordsByDate.value.filter(record => {
+        const idMatch = searchId.value === '' || String(record.elder_info?.id).includes(searchId.value)
+        const nameMatch = searchName.value === '' || (record.elder_info?.full_name || '').includes(searchName.value)
+        return idMatch && nameMatch
+    })
+})
+
 const updateRecord = async (record) => {
     try {
         const formattedDate = formatDate(selectedDate.value)
@@ -202,10 +224,19 @@ const updateRecord = async (record) => {
 
 const deleteRecord = async (recordId) => {
     try {
+        await ElMessageBox.confirm('确定要删除这条记录吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        })
+
         await axios.delete(`/health/records/${recordId}/`)
         ElMessage.success('删除成功')
-        fetchRecordsByDate()  // 删除后刷新日期列表
+        fetchRecordsByDate()  // 删除后刷新
     } catch (err) {
+        if (err === 'cancel') {
+            return
+        }
         ElMessage.error('删除失败')
     }
 }
@@ -214,7 +245,6 @@ const deleteRecord = async (recordId) => {
 
 import VChart from 'vue-echarts'
 
-// 注册 ECharts 组件
 import { use } from 'echarts/core'
 import { LineChart, BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components'
@@ -240,7 +270,7 @@ const recent7Records = computed(() => {
         .slice() // 避免修改原数组
         .sort((a, b) => new Date(b.date) - new Date(a.date)) // 按日期降序
         .slice(0, 7)
-        .reverse() // 让图表日期升序
+        .reverse() // 日期升序
 })
 
 const lineChartOption = ref({})
@@ -285,13 +315,14 @@ const updateCharts = () => {
     const weight = records.map(r => r.weight)
 
     lineChartOption.value = {
-        title: { text: '健康趋势（折线图）' },
+        title: { text: '近7日健康趋势' },
         tooltip: { trigger: 'axis' },
         legend: {
-            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)']
+            data: ['体温 (°C)', '心率 (bpm)', '收缩压 (mmHg)', '舒张压 (mmHg)', '血糖 (mmol/L)', '呼吸频率', '血氧 (%)', '体重 (kg)'],
+            textStyle: { fontSize: 14 }
         },
-        xAxis: { type: 'category', data: dates },
-        yAxis: { type: 'value' },
+        xAxis: { type: 'category', data: dates, axisLabel: { fontSize: 15 } },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [
             { name: '体温 (°C)', type: 'line', data: temperature },
             { name: '心率 (bpm)', type: 'line', data: heartRate },
@@ -305,7 +336,7 @@ const updateCharts = () => {
     }
 
     barChartOption.value = {
-        title: { text: '健康指标平均值（条形图）' },
+        title: { text: '近7日健康指标平均值' },
         tooltip: {},
         xAxis: {
             type: 'category',
@@ -319,8 +350,9 @@ const updateCharts = () => {
                 '血氧 (%)',
                 '体重 (kg)'
             ]
+            , axisLabel: { fontSize: 12.5 }
         },
-        yAxis: { type: 'value' },
+        yAxis: { type: 'value', axisLabel: { fontSize: 15 } },
         series: [{
             type: 'bar',
             data: [
@@ -337,7 +369,7 @@ const updateCharts = () => {
     }
 }
 
-// 简单平均函数
+// 平均函数
 const average = arr => {
     if (arr.length === 0) return 0
     return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1)
@@ -347,3 +379,20 @@ onMounted(() => {
     fetchElders()
 })
 </script>
+<style scoped>
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 16px;
+}
+
+::v-deep(.echarts) {
+    font-size: 15px;
+}
+</style>

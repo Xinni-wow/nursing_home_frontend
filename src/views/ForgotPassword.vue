@@ -22,7 +22,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="handleRetrieve">找回密码</el-button>
+                    <el-button type="primary" @click="handleRetrieve">重置密码</el-button>
                     <el-button @click="goBack">返回登录</el-button>
                 </el-form-item>
             </el-form>
@@ -38,7 +38,12 @@ import router from '@/router';
 
 
 const goBack = () => {
-    router.push('/login');
+    const currentPath = router.currentRoute.value.path;
+    if (currentPath !== '/login') {
+        router.push('/login').catch(err => {
+            console.warn('路由跳转失败:', err);
+        });
+    }
 };
 
 const form = ref({
@@ -92,12 +97,16 @@ const handleRetrieve = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f0f2f5;
+    background: url('/background.png');
+    background-size: cover;
 }
 
 .forgot-password-card {
     width: 450px;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .title {

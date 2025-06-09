@@ -1,28 +1,15 @@
 <template>
-    <div class="user-list">
+    <div style="padding: 20px;padding-top: 0%;">
         <h2 style="margin-bottom: 20px">用户管理</h2>
 
         <!-- 搜索栏 -->
         <el-form :inline="true" @submit.prevent>
             <el-form :inline="true" @submit.prevent>
-                <el-form-item label="按用户名搜索">
-                    <el-input v-model="usernameKeyword" placeholder="输入用户名" @keyup.enter="searchByUsername" clearable />
-                    <el-button type="primary" @click="searchByUsername">搜索</el-button>
-                </el-form-item>
-
-                <el-form-item label="按真实姓名搜索">
-                    <el-input v-model="nameKeyword" placeholder="输入真实姓名" @keyup.enter="searchByName" clearable />
-                    <el-button type="primary" @click="searchByName">搜索</el-button>
-                </el-form-item>
-
-                <el-form-item label="按绑定老人姓名搜索">
-                    <el-input v-model="elderKeyword" placeholder="输入老人姓名" @keyup.enter="searchByElderName" clearable />
-                    <el-button type="primary" @click="searchByElderName">搜索</el-button>
-                </el-form-item>
-
-                <el-form-item style="width: 100%;">
-                    <el-button @click="fetchUsers">重置</el-button>
-                </el-form-item>
+                <el-input v-model="usernameKeyword" placeholder="输入用户名" clearable />
+                <el-input v-model="nameKeyword" placeholder="输入真实姓名" clearable />
+                <el-input v-model="elderKeyword" placeholder="输入老人姓名" clearable />
+                <el-button type="primary" @click="unifiedSearch">搜索</el-button>
+                <el-button @click="fetchUsers">重置</el-button>
             </el-form>
         </el-form>
 
@@ -45,8 +32,8 @@
             </el-table-column>
             <el-table-column label="操作" width="160">
                 <template #default="scope">
-                    <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+                    <el-button type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -56,21 +43,22 @@
             :page-size="pageSize" :total="users.length" @current-change="handlePageChange"
             :current-page="currentPage" />
 
+        <!-- 编辑弹窗 -->
         <el-dialog v-model="editDialogVisible" title="编辑用户信息" width="500px" append-to-body="true" top='25vh'>
-            <el-form :model="editForm" label-width="100px" size="small">
+            <el-form :model="editForm" label-width="100px" size="small" :rules="rules" ref="formRef">
                 <el-form-item label="用户名">
                     <el-input v-model="editForm.username" disabled />
                 </el-form-item>
-                <el-form-item label="真实姓名">
+                <el-form-item label="真实姓名" prop="full_name">
                     <el-input v-model="editForm.full_name" />
                 </el-form-item>
-                <el-form-item label="手机号">
+                <el-form-item label="手机号" prop="phone">
                     <el-input v-model="editForm.phone" />
                 </el-form-item>
-                <el-form-item label="住址">
+                <el-form-item label="住址" prop="address">
                     <el-input v-model="editForm.address" />
                 </el-form-item>
-                <el-form-item label="邮箱">
+                <el-form-item label="邮箱" prop="email">
                     <el-input v-model="editForm.email" />
                 </el-form-item>
             </el-form>
@@ -99,6 +87,11 @@ const fetchUsers = async () => {
         const res = await axios.get('/staff/relatives/')
         users.value = res.data
         currentPage.value = 1
+
+        // 清空搜索输入框
+        usernameKeyword.value = ''
+        nameKeyword.value = ''
+        elderKeyword.value = ''
     } catch (err) {
         ElMessage.error('获取用户列表失败')
     } finally {
@@ -106,77 +99,7 @@ const fetchUsers = async () => {
     }
 }
 
-const searchByUsername = async () => {
-    const keyword = usernameKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relatives/search-by-username/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { username: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
-const searchByName = async () => {
-    const keyword = nameKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relatives/search-by-fullname/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { name: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
 const elderKeyword = ref('')
-
-const searchByElderName = async () => {
-    const keyword = elderKeyword.value.trim()
-    loading.value = true
-
-    try {
-        let url = '/staff/relatives/'
-        if (keyword) {
-            url = '/staff/relative/search-by-elder/'
-        }
-
-        const res = await axios.get(url, {
-            params: keyword ? { elder_name: keyword } : {}
-        })
-
-        users.value = res.data
-        currentPage.value = 1
-    } catch (err) {
-        ElMessage.error('搜索失败')
-    } finally {
-        loading.value = false
-    }
-}
-
 const editDialogVisible = ref(false)
 const editForm = ref({})
 
@@ -185,14 +108,49 @@ const handleEdit = (user) => {
     editDialogVisible.value = true
 }
 
+const formRef = ref()
+const rules = ref({
+    full_name: [
+        { required: true, message: '真实姓名不能为空', trigger: 'blur' }
+    ],
+    phone: [
+        { required: true, message: '手机号不能为空', trigger: 'blur' }
+    ],
+    address: [
+        { required: true, message: '住址不能为空', trigger: 'blur' }
+    ],
+    email: [
+        { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur', 'change'] }
+    ]
+})
 const submitEdit = async () => {
     try {
+        // 调用表单验证
+        await formRef.value.validate()
+
+        // 验证通过，发起请求
         const res = await axios.patch(`/staff/relative/${editForm.value.id}/update/`, editForm.value)
         ElMessage.success('修改成功')
         editDialogVisible.value = false
-        fetchUsers() // 重新拉取用户列表
+        fetchUsers()
     } catch (err) {
-        ElMessage.error('修改失败')
+        // 判断是否是表单验证失败
+        if (err instanceof Error && err.message === 'Validate error') {
+            ElMessage.warning('请填写必填字段')
+            return
+        }
+
+        // 提取后端返回的具体字段错误信息
+        const fieldErrors = err.response?.data?.data || {}
+
+        // 遍历所有字段错误，并展示第一条错误信息作为提示
+        const messages = Object.values(fieldErrors).flat()
+
+        if (messages.length > 0) {
+            ElMessage.error(messages[0])
+        } else {
+            ElMessage.error('修改失败')
+        }
     }
 }
 
@@ -223,6 +181,40 @@ const handleDelete = async (id) => {
     }
 }
 
+const unifiedSearch = async () => {
+    loading.value = true
+    try {
+        const params = {}
+
+        if (usernameKeyword.value.trim()) {
+            params.username = usernameKeyword.value.trim()
+        }
+
+        if (nameKeyword.value.trim()) {
+            params.full_name = nameKeyword.value.trim()
+        }
+
+        if (elderKeyword.value.trim()) {
+            params.elder_name = elderKeyword.value.trim()
+        }
+
+        let url = '/staff/relatives/'
+
+        // 有搜索条件，使用搜索接口
+        if (Object.keys(params).length > 0) {
+            url = '/staff/relatives/search/'
+        }
+
+        const res = await axios.get(url, { params })
+        users.value = res.data
+        currentPage.value = 1
+    } catch (err) {
+        ElMessage.error('搜索失败')
+    } finally {
+        loading.value = false
+    }
+}
+
 // 分页功能
 const currentPage = ref(1)
 const pageSize = ref(5)
@@ -243,8 +235,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.user-list {
-    padding: 20px;
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+::v-deep(.el-table) {
+    font-size: 15px;
 }
 
 .el-input {

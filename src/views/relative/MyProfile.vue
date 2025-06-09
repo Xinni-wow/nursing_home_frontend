@@ -90,3 +90,16 @@ onMounted(() => {
     fetchUserInfo()
 })
 </script>
+<style scoped>
+::v-deep(.el-form-item__label) {
+    font-size: 16px;
+}
+
+::v-deep(.el-input__inner) {
+    font-size: 16px;
+}
+
+.el-button {
+    font-size: 16px;
+}
+</style>
