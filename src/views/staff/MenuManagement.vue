@@ -160,13 +160,28 @@ const query = ref({
 
 
 const menuList = ref([])
-
 const fetchMenus = async () => {
   try {
-    // query.value.start_date 和 end_date 是 Date 对象（来自 el-date-picker）
-    // 统一格式化成字符串
-    const startDateStr = formatDate(query.value.start_date)
-    const endDateStr = formatDate(query.value.end_date)
+    const { start_date, end_date } = query.value
+
+    // 开始日期和结束日期都不能为空
+    if (!start_date) {
+      ElMessage.warning('请先选择开始日期')
+      return
+    }
+    if (!end_date) {
+      ElMessage.warning('请先选择结束日期')
+      return
+    }
+
+    // 开始日期不能晚于结束日期
+    if (start_date > end_date) {
+      ElMessage.warning('开始日期不能晚于结束日期')
+      return
+    }
+
+    const startDateStr = formatDate(start_date)
+    const endDateStr = formatDate(end_date)
 
     const res = await request.get('staff/diet/list/', {
       params: {
@@ -174,12 +189,14 @@ const fetchMenus = async () => {
         end_date: endDateStr,
       }
     })
+
     menuList.value = res.data
   } catch (err) {
     console.error('❌ 获取菜单失败:', err.response?.data || err.message)
     ElMessage.error(err.response?.data?.detail || '获取菜单失败')
   }
 }
+
 
 
 onMounted(fetchMenus)
