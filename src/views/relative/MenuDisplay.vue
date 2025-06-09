@@ -9,6 +9,7 @@
           placeholder="选择日期"
           format="YYYY-MM-DD"
           value-format="YYYY-MM-DD"
+          :disabled-date="disabledDate"
           @change="fetchMenu"
           clearable
         />
@@ -41,15 +42,33 @@ import { ref, onMounted, computed } from 'vue'
 import request from '@/utils/request'
 import { ElMessage } from 'element-plus'
 
+// 当前选中的日期
 const selectedDate = ref(null)
+// 菜单列表
 const menuList = ref([])
 
+// 用于展示的三餐类型
 const mealTypes = [
   { type: 'breakfast', label: '早餐' },
   { type: 'lunch', label: '午餐' },
   { type: 'dinner', label: '晚餐' },
 ]
 
+// 禁用今天之前或15天以后的日期
+const disabledDate = (date) => {
+  const today = new Date()
+  const maxDate = new Date()
+  maxDate.setDate(today.getDate() + 14)
+
+  // 只保留年月日判断（清除时间部分）
+  today.setHours(0, 0, 0, 0)
+  maxDate.setHours(0, 0, 0, 0)
+  date.setHours(0, 0, 0, 0)
+
+  return date < today || date > maxDate
+}
+
+// 获取菜单数据
 const fetchMenu = async () => {
   try {
     const params = selectedDate.value ? { date: selectedDate.value } : {}
@@ -60,11 +79,13 @@ const fetchMenu = async () => {
   }
 }
 
+// 重置选择日期（查看未来两周）
 const resetDate = () => {
   selectedDate.value = null
   fetchMenu()
 }
 
+// 将菜单按日期分组并整理成对象数组
 const groupedByDate = computed(() => {
   const map = {}
   for (const item of menuList.value) {
@@ -78,6 +99,7 @@ const groupedByDate = computed(() => {
   return Object.values(map).sort((a, b) => a.date.localeCompare(b.date))
 })
 
+// 初始加载菜单数据
 onMounted(fetchMenu)
 </script>
 
